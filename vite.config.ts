@@ -7,10 +7,10 @@ export default defineConfig({
     monkey({
       entry: "src/main.ts",
       build: {
-        fileName: "hv-items-price.js",
+        fileName: "hv-tools.js",
       },
       userscript: {
-        name: "hv-items-price",
+        name: "hv-tools",
         author: "monon98",
         icon: "https://hentaiverse.org/isekai/y/favicon.png",
         version: "0.0.1",
@@ -19,6 +19,9 @@ export default defineConfig({
         match: [
           "*://hentaiverse.org/isekai/?s=Bazaar&ss=es*",
           "*://hentaiverse.org/?s=Bazaar&ss=es*",
+          "*://hentaiverse.org/isekai/?s=Forge&ss=up*",
+          "*://hentaiverse.org/?s=Forge&ss=up*",
+          "*://hentaiverse.org/?s=Bazaar&ss=ml*",
         ],
       },
     }),

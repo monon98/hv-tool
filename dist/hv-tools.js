@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         hv-items-price
+// @name         hv-tools
 // @namespace    https://github.com/monon98
 // @version      0.0.1
 // @author       monon98
@@ -7,8 +7,10 @@
 // @icon         https://hentaiverse.org/isekai/y/favicon.png
 // @match        *://hentaiverse.org/isekai/?s=Bazaar&ss=es*
 // @match        *://hentaiverse.org/?s=Bazaar&ss=es*
+// @match        *://hentaiverse.org/isekai/?s=Forge&ss=up*
+// @match        *://hentaiverse.org/?s=Forge&ss=up*
+// @match        *://hentaiverse.org/?s=Bazaar&ss=ml*
 // @grant        GM_notification
-// @grant        GM_setClipboard
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -16,12 +18,19 @@
   'use strict';
 
   var _GM_notification = /* @__PURE__ */ (() => typeof GM_notification != "undefined" ? GM_notification : void 0)();
-  var _GM_setClipboard = /* @__PURE__ */ (() => typeof GM_setClipboard != "undefined" ? GM_setClipboard : void 0)();
   var _GM_xmlhttpRequest = /* @__PURE__ */ (() => typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
   let dataList = [];
   function bindEvents() {
-    const classDiv = document.getElementsByClassName("hvut-es-buttons")[0];
-    const inputElement = classDiv.getElementsByTagName("input")[4];
+    setBindEvents("hvut-es-buttons", 4);
+    setBindEvents("hvut-up-buttons", 2);
+    setBindEvents("hvut-ml-side", 2);
+  }
+  function setBindEvents(name, index) {
+    const classDiv = document.getElementsByClassName(name)[0];
+    if (!classDiv) {
+      return;
+    }
+    const inputElement = classDiv.getElementsByTagName("input")[index];
     if (inputElement) {
       inputElement.onclick = () => {
         sendResponse();
@@ -49,6 +58,10 @@
       },
       onload: function(response) {
         getItemPrices(response.responseText);
+        const textareaElement = document.getElementsByTagName("textarea")[0];
+        if (textareaElement) {
+          setItemPrices(textareaElement);
+        }
       }
     });
   }
@@ -67,13 +80,21 @@
       }
     }
     if (dataList.length === 0) {
-      _GM_notification({ text: "暂无数据", timeout: 3e3 });
+      _GM_notification({ text: "出现异常，暂无数据", timeout: 3e3 });
       return;
-    } else {
-      _GM_setClipboard(dataList.join("\n"), "text/plain");
-      _GM_notification({ text: "复制成功", timeout: 3e3 });
     }
   }
-  setTimeout(bindEvents, 500);
+  function setItemPrices(textareaElement) {
+    if (!textareaElement || dataList.length === 0) {
+      return;
+    }
+    textareaElement.value = `${dataList.join("\n")}`;
+    _GM_notification({ text: "价格数据已更新，请点击保存", timeout: 3e3 });
+  }
+  const search = location.search;
+  const itemPriceSearch = ["?s=Bazaar&ss=es", "?s=Forge&ss=up", "?s=Bazaar&ss=ml"];
+  if (itemPriceSearch.includes(search)) {
+    setTimeout(bindEvents, 500);
+  }
 
 })();
