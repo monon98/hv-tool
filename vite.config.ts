@@ -19,6 +19,9 @@ export default defineConfig({
         match: [
           "*://hentaiverse.org/isekai/?s=Bazaar&ss=es*",
           "*://hentaiverse.org/?s=Bazaar&ss=es*",
+          "*://hentaiverse.org/isekai/?s=Forge&ss=up*",
+          "*://hentaiverse.org/?s=Forge&ss=up*",
+          "*://hentaiverse.org/?s=Bazaar&ss=ml*",
         ],
       },
     }),
