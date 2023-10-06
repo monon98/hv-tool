@@ -1,15 +1,17 @@
 // ==UserScript==
 // @name         hv-tools
 // @namespace    https://github.com/monon98
-// @version      0.0.1
+// @version      0.0.2
 // @author       monon98
-// @description  基于HV Utils使用，自动获取HV market商品价格
+// @description  基于HV Utils使用，增强功能
 // @icon         https://hentaiverse.org/isekai/y/favicon.png
 // @match        *://hentaiverse.org/isekai/?s=Bazaar&ss=es*
 // @match        *://hentaiverse.org/?s=Bazaar&ss=es*
 // @match        *://hentaiverse.org/isekai/?s=Forge&ss=up*
 // @match        *://hentaiverse.org/?s=Forge&ss=up*
 // @match        *://hentaiverse.org/?s=Bazaar&ss=ml*
+// @match        *://hentaiverse.org/isekai/?s=Bazaar&ss=mk&screen=browseitems&filter=*&itemid=*
+// @match        *://hentaiverse.org/?s=Bazaar&ss=mk&screen=browseitems&filter=*&itemid=*
 // @grant        GM_notification
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -91,10 +93,45 @@
     textareaElement.value = `${dataList.join("\n")}`;
     _GM_notification({ text: "价格数据已更新，请点击保存", timeout: 3e3 });
   }
+  function setPrices() {
+    const buyPrice = getPrice("market_itemorders", 1);
+    const sellPrice = getPrice("market_itemorders", 0);
+    if (sellPrice * 0.9 > buyPrice) {
+      setPrice("market_placeorder", 0);
+      setPrice("market_placeorder", 1, "1000");
+    }
+  }
+  function setPrice(className, index, num = "0") {
+    const classDiv = document.getElementsByClassName(className);
+    if (classDiv) {
+      const tbody = classDiv[index].getElementsByTagName("tbody")[0];
+      const tr = tbody.getElementsByTagName("tr");
+      tr[0].getElementsByTagName("td")[1].getElementsByTagName("input")[1].value = num;
+      if (num === "0") {
+        tr[2].getElementsByTagName("td")[0].click();
+      }
+      tr[4].getElementsByTagName("td")[0].click();
+      tr[3].getElementsByTagName("td")[0].getElementsByTagName("input")[0].style.backgroundColor = "#ff0000";
+    }
+  }
+  function getPrice(className, index) {
+    const classDiv = document.getElementsByClassName(className);
+    if (classDiv) {
+      const tbody = classDiv[index].getElementsByTagName("tbody")[0];
+      const tr = tbody.getElementsByTagName("tr");
+      return Number(
+        tr[1].getElementsByTagName("td")[1].innerHTML.split(" ")[0].split(",").join("")
+      ) || 0;
+    }
+    return 0;
+  }
   const search = location.search;
   const itemPriceSearch = ["?s=Bazaar&ss=es", "?s=Forge&ss=up", "?s=Bazaar&ss=ml"];
   if (itemPriceSearch.includes(search)) {
     setTimeout(bindEvents, 500);
+  }
+  if (search.startsWith("?s=Bazaar&ss=mk&screen=browseitems")) {
+    setTimeout(setPrices, 500);
   }
 
 })();
