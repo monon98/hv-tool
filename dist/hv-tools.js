@@ -10,8 +10,8 @@
 // @match        *://hentaiverse.org/isekai/?s=Forge&ss=up*
 // @match        *://hentaiverse.org/?s=Forge&ss=up*
 // @match        *://hentaiverse.org/?s=Bazaar&ss=ml*
-// @match        *://hentaiverse.org/isekai/?s=Bazaar&ss=mk&screen=browseitems&filter=*&itemid=*
-// @match        *://hentaiverse.org/?s=Bazaar&ss=mk&screen=browseitems&filter=*&itemid=*
+// @match        *://hentaiverse.org/isekai/?s=Bazaar&ss=mk&screen=*&filter=*&itemid=*
+// @match        *://hentaiverse.org/?s=Bazaar&ss=mk&screen=*&filter=*&itemid=*
 // @grant        GM_notification
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -23,7 +23,7 @@
   var _GM_xmlhttpRequest = /* @__PURE__ */ (() => typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
   let dataList = [];
   function bindEvents() {
-    setBindEvents("hvut-es-buttons", 4);
+    setBindEvents("hvut-es-side", 5);
     setBindEvents("hvut-up-buttons", 2);
     setBindEvents("hvut-ml-side", 2);
   }
@@ -100,6 +100,7 @@
       setPrice("market_placeorder", 0);
       setPrice("market_placeorder", 1, "1000");
     }
+    setListens();
   }
   function setPrice(className, index, num = "0") {
     const classDiv = document.getElementsByClassName(className);
@@ -124,6 +125,31 @@
       ) || 0;
     }
     return 0;
+  }
+  function setListens() {
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "a") {
+        setListen("market_itemheader", 0);
+      } else if (event.key === "d") {
+        setListen("market_itemheader", 2);
+      } else if (event.key === "w") {
+        setListen("sellorder_update");
+      } else if (event.key === "s") {
+        setListen("buyorder_update");
+      }
+    });
+  }
+  function setListen(idName, index = -1) {
+    var _a;
+    if (index > -1) {
+      const div = document.querySelector(
+        `#${idName} div:nth-child(${index + 1})`
+      );
+      (_a = div == null ? void 0 : div.querySelector("a")) == null ? void 0 : _a.click();
+    } else {
+      const div = document.getElementById(idName);
+      div == null ? void 0 : div.click();
+    }
   }
   const search = location.search;
   const itemPriceSearch = ["?s=Bazaar&ss=es", "?s=Forge&ss=up", "?s=Bazaar&ss=ml"];

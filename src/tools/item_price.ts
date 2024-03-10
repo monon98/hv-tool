@@ -4,13 +4,19 @@ let dataList: Array<string> = [];
 
 export function bindEvents() {
   // 武器店页面
-  setBindEvents("hvut-es-buttons", 4);
+  setBindEvents("hvut-es-side", 5);
   // 装备强化页面
   setBindEvents("hvut-up-buttons", 2);
   // 装备强化页面
   setBindEvents("hvut-ml-side", 2);
 }
 
+/**
+ * 设置价格按钮事件监听
+ * @param name button的class类名
+ * @param index  name下子元素的顺序
+ * @returns 
+ */
 function setBindEvents(name: string, index: number) {
   const classDiv = document.getElementsByClassName(name)[0];
   if (!classDiv) {
@@ -83,9 +89,6 @@ function getItemPrices(html = "") {
   if (dataList.length === 0) {
     GM_notification({ text: "出现异常，暂无数据", timeout: 3000 });
     return;
-    // } else {
-    //   GM_setClipboard(dataList.join("\n"), "text/plain");
-    //   GM_notification({ text: "复制成功", timeout: 3000 });
   }
 }
 

@@ -7,6 +7,7 @@ export function setPrices() {
     setPrice("market_placeorder", 1, "1000");
     //   GM_notification({ text: "订单数据已自动填充", timeout: 1000 });
   }
+  setListens();
 }
 
 // 设置价格
@@ -47,4 +48,32 @@ function getPrice(className: string, index: number): number {
     );
   }
   return 0;
+}
+
+// 设置监听
+function setListens(): void {
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "a") {
+      setListen("market_itemheader", 0);
+    } else if (event.key === "d") {
+      setListen("market_itemheader", 2);
+    } else if (event.key === "w") {
+      setListen("sellorder_update");
+    } else if (event.key === "s") {
+      setListen("buyorder_update");
+    }
+  });
+}
+
+// 设置监听
+function setListen(idName: string, index: number = -1): void {
+  if (index > -1) {
+    const div = document.querySelector(
+      `#${idName} div:nth-child(${index + 1})`
+    );
+    div?.querySelector("a")?.click();
+  } else {
+    const div = document.getElementById(idName);
+    div?.click();
+  }
 }
