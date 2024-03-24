@@ -1,12 +1,13 @@
-import { bindEvents } from "./tools/item_price";
+import { bindButtonEvents } from "./tools/equipment-shop-price";
 import { setPrices } from "./tools/market_help";
 
 const search = location.search;
 
-// item price
-const itemPriceSearch = ["?s=Bazaar&ss=es", "?s=Forge&ss=up", "?s=Bazaar&ss=ml"];
-if (itemPriceSearch.includes(search)) {
-  setTimeout(bindEvents, 500);
+// equipment shop price button
+const equipmentShopKeys: string[] = ["?s=Bazaar&ss=es", "?s=Forge&ss=up", "?s=Bazaar&ss=ml"];
+const isEquipmentShop: boolean = equipmentShopKeys.some(key => search.includes(key));
+if (isEquipmentShop) {
+  setTimeout(bindButtonEvents, 500);
 }
 
 // market help

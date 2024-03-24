@@ -1,8 +1,9 @@
 import { GM_notification, GM_xmlhttpRequest } from "$";
 
-let dataList: Array<string> = [];
-
-export function bindEvents() {
+/**
+ * Materials Prices按钮绑定事件
+ */ 
+export function bindButtonEvents() {
   // 武器店页面
   setBindEvents("hvut-es-side", 5);
   // 装备强化页面
@@ -25,13 +26,16 @@ function setBindEvents(name: string, index: number) {
   const inputElement = classDiv.getElementsByTagName("input")[index];
   if (inputElement) {
     inputElement.onclick = () => {
-      sendResponse();
+      inquire();
     };
     inputElement.style.backgroundColor = "#ff0000";
   }
 }
 
-function sendResponse() {
+/**
+ * 询价
+ */
+function inquire() {
   const isIsekai = window.location.href.includes("isekai");
   const url = isIsekai
     ? "https://hentaiverse.org/isekai/?s=Bazaar&ss=mk&screen=browseitems&filter=ma"
@@ -54,21 +58,25 @@ function sendResponse() {
       "upgrade-insecure-requests": "1",
     },
     onload: function (response) {
-      // console.log(response.responseText);
-      getItemPrices(response.responseText);
+      const itemPriceList: string[] = dealInquireText(response.responseText);
       // 获取到最新数据后，自动填充
       const textareaElement = document.getElementsByTagName("textarea")[0];
       if (textareaElement) {
-        setItemPrices(textareaElement);
+        setPriceInput(textareaElement, itemPriceList);
       }
     },
   });
 }
 
-function getItemPrices(html = "") {
+/**
+ * 询价接口数据处理
+ * @param text 
+ * @returns {Array<string>}
+ */
+function dealInquireText(text = "") {
   let domparser = new DOMParser();
-  let doc = domparser.parseFromString(html, "text/html");
-  dataList = [];
+  let doc = domparser.parseFromString(text, "text/html");
+  const itemPriceList: Array<string> = [];
   const marketItemListDiv = doc.getElementById("market_itemlist");
   const marketItemList =
     marketItemListDiv
@@ -83,19 +91,24 @@ function getItemPrices(html = "") {
       .getElementsByTagName("td")?.[3]
       ?.innerText.split(" ")[0];
     if (itemName && itemPrice) {
-      dataList.push(`${itemName} @ ${itemPrice}`);
+      itemPriceList.push(`${itemName} @ ${itemPrice}`);
     }
   }
-  if (dataList.length === 0) {
+  if (itemPriceList.length === 0) {
     GM_notification({ text: "出现异常，暂无数据", timeout: 3000 });
-    return;
   }
+  return itemPriceList;
 }
 
-function setItemPrices(textareaElement: HTMLTextAreaElement) {
-  if (!textareaElement || dataList.length === 0) {
+/***
+ * 填充价格输入框
+ * @param textareaElement 
+ * @param itemPriceList 
+ */
+function setPriceInput(textareaElement: HTMLTextAreaElement, itemPriceList: string[]) {
+  if (!textareaElement || itemPriceList.length === 0) {
     return;
   }
-  textareaElement.value = `${dataList.join("\n")}`;
+  textareaElement.value = `${itemPriceList.join("\n")}`;
   GM_notification({ text: "价格数据已更新，请点击保存", timeout: 3000 });
 }

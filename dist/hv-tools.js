@@ -98,7 +98,21 @@
     const sellPrice = getPrice("market_itemorders", 0);
     if (sellPrice * 0.9 > buyPrice) {
       setPrice("market_placeorder", 0);
-      setPrice("market_placeorder", 1, "1000");
+      let num = "1000";
+      if (sellPrice < 500) {
+        num = "10000";
+      } else if (sellPrice < 2e3) {
+        num = "5000";
+      } else if (sellPrice < 5e3) {
+        num = "2000";
+      } else if (sellPrice < 1e4) {
+        num = "1000";
+      } else if (sellPrice < 5e4) {
+        num = "200";
+      } else {
+        num = "100";
+      }
+      setPrice("market_placeorder", 1, num);
     }
     setListens();
   }
