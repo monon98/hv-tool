@@ -13,7 +13,7 @@ export default defineConfig({
         name: "hv-tools",
         author: "monon98",
         icon: "https://hentaiverse.org/isekai/y/favicon.png",
-        version: "0.0.2",
+        version: "0.0.3",
         namespace: "https://github.com/monon98",
         description: "基于HV Utils使用，增强功能",
         match: [

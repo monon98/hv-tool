@@ -1,16 +1,42 @@
-export function setPrices() {
+export function setBuyPrices() {
   const buyPrice = getPrice("market_itemorders", 1);
   const sellPrice = getPrice("market_itemorders", 0);
   // 比较价格
   if (sellPrice * 0.9 > buyPrice) {
     setPrice("market_placeorder", 0);
-    setPrice("market_placeorder", 1, "1000");
-    //   GM_notification({ text: "订单数据已自动填充", timeout: 1000 });
+    const quantity: string = getBuyQuantity(buyPrice)
+    setPrice("market_placeorder", 1, quantity);
   }
   setListens();
 }
 
-// 设置价格
+/**
+ * 设置购买的数量
+ * @param buyPrice 
+ * @returns {string}
+ */
+function getBuyQuantity(buyPrice: number) {
+  if (buyPrice < 500) {
+    return '10000';
+  } else if (buyPrice < 2000) {
+    return '5000';
+  } else if (buyPrice < 5000) {
+    return '2000';
+  } else if (buyPrice < 10000) {
+    return '1000';
+  } else if (buyPrice < 50000) {
+    return '200';
+  } else {
+    return '100';
+  }
+}
+
+/**
+ * 设置购买价格
+ * @param className 
+ * @param index 
+ * @param num 
+ */
 function setPrice(className: string, index: number, num: string = "0") {
   const classDiv = document.getElementsByClassName(className);
   if (classDiv) {
@@ -31,7 +57,12 @@ function setPrice(className: string, index: number, num: string = "0") {
   }
 }
 
-// 获取价格
+/**
+ * 读取价格
+ * @param className 
+ * @param index 
+ * @returns {number}
+ */
 function getPrice(className: string, index: number): number {
   const classDiv = document.getElementsByClassName(className);
   if (classDiv) {

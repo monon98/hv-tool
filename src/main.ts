@@ -1,5 +1,5 @@
 import { bindButtonEvents } from "./tools/equipment-shop-price";
-import { setPrices } from "./tools/market_help";
+import { setBuyPrices } from "./tools/market-price-setting";
 
 const search = location.search;
 
@@ -12,5 +12,5 @@ if (isEquipmentShop) {
 
 // market help
 if (search.startsWith('?s=Bazaar&ss=mk&screen=browseitems')) {
-  setTimeout(setPrices, 500);
+  setTimeout(setBuyPrices, 500);
 }
