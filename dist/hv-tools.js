@@ -19,8 +19,8 @@
 (function () {
   'use strict';
 
-  var _GM_notification = /* @__PURE__ */ (() => typeof GM_notification != "undefined" ? GM_notification : void 0)();
-  var _GM_xmlhttpRequest = /* @__PURE__ */ (() => typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
+  var _GM_notification = (() => typeof GM_notification != "undefined" ? GM_notification : void 0)();
+  var _GM_xmlhttpRequest = (() => typeof GM_xmlhttpRequest != "undefined" ? GM_xmlhttpRequest : void 0)();
   function bindButtonEvents() {
     setBindEvents("hvut-es-side", 5);
     setBindEvents("hvut-up-buttons", 2);
@@ -67,15 +67,14 @@
     });
   }
   function dealInquireText(text = "") {
-    var _a, _b, _c, _d;
     let domparser = new DOMParser();
     let doc = domparser.parseFromString(text, "text/html");
     const itemPriceList = [];
     const marketItemListDiv = doc.getElementById("market_itemlist");
-    const marketItemList = (marketItemListDiv == null ? void 0 : marketItemListDiv.getElementsByTagName("table")[0].getElementsByTagName("tbody")[0].getElementsByTagName("tr")) || [];
+    const marketItemList = marketItemListDiv?.getElementsByTagName("table")[0].getElementsByTagName("tbody")[0].getElementsByTagName("tr") || [];
     for (let i = 0; i < marketItemList.length; i++) {
-      const itemName = (_b = (_a = marketItemList[i].getElementsByTagName("td")) == null ? void 0 : _a[0]) == null ? void 0 : _b.innerText;
-      const itemPrice = (_d = (_c = marketItemList[i].getElementsByTagName("td")) == null ? void 0 : _c[3]) == null ? void 0 : _d.innerText.split(" ")[0];
+      const itemName = marketItemList[i].getElementsByTagName("td")?.[0]?.innerText;
+      const itemPrice = marketItemList[i].getElementsByTagName("td")?.[3]?.innerText.split(" ")[0];
       if (itemName && itemPrice) {
         itemPriceList.push(`${itemName} @ ${itemPrice}`);
       }
@@ -96,9 +95,9 @@
     const buyPrice = getPrice("market_itemorders", 1);
     const sellPrice = getPrice("market_itemorders", 0);
     if (sellPrice * 0.9 > buyPrice) {
-      setBuyPrice("market_placeorder", 0);
+      setPrice("market_placeorder", 0);
       const quantity = getBuyQuantity(buyPrice);
-      setBuyPrice("market_placeorder", 1, quantity);
+      setPrice("market_placeorder", 1, quantity);
     }
     setListens();
   }
@@ -117,7 +116,7 @@
       return "100";
     }
   }
-  function setBuyPrice(className, index, num = "0") {
+  function setPrice(className, index, num = "0") {
     const classDiv = document.getElementsByClassName(className);
     if (classDiv) {
       const tbody = classDiv[index].getElementsByTagName("tbody")[0];
@@ -155,15 +154,14 @@
     });
   }
   function setListen(idName, index = -1) {
-    var _a;
     if (index > -1) {
       const div = document.querySelector(
         `#${idName} div:nth-child(${index + 1})`
       );
-      (_a = div == null ? void 0 : div.querySelector("a")) == null ? void 0 : _a.click();
+      div?.querySelector("a")?.click();
     } else {
       const div = document.getElementById(idName);
-      div == null ? void 0 : div.click();
+      div?.click();
     }
   }
   const search = location.search;
